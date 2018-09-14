@@ -24,16 +24,13 @@ ui <- fluidPage(
       fluidRow(column(
         12,
         align = "center",
-        imageOutput("TEplot_out",
-                    height = "100%",
-                    width = "100%")
+        imageOutput("TEplot_out", width = "100%")
       )),
+      hr(),
       fluidRow(column(
         12,
         align = "center",
-        imageOutput("MPplot_out",
-                    height = "100%",
-                    width = "100%")
+        imageOutput("MPplot_out", width = "100%")
       )),
       hr(),
       #### Shape, color, fill UI ####
@@ -107,12 +104,11 @@ server <- function(input, output, session) {
   #### Create current plot ####
   TEplot <- reactive({
     req(input$miRs)
-    df <- df %>%
+    TEdf <- df %>%
       dplyr::filter(Type == "TE")
-    df <- droplevels(df)
     highlight <- c(input$miRs)
-    other_miRs <- droplevels(df[!(df$miRNA %in% c(input$miRs)), ]$miRNA)
-    df$miRNA <- factor(df$miRNA, levels = c(levels(other_miRs), highlight))
+    other_miRs <- droplevels(TEdf[!(TEdf$miRNA %in% c(input$miRs)), ]$miRNA)
+    TEdf$miRNA <- factor(TEdf$miRNA, levels = c(levels(other_miRs), highlight))
 
     lapply(1:length(unique(input$miRs)), function(i) {
       req(input[[paste0("shape", i)]],
@@ -127,7 +123,7 @@ server <- function(input, output, session) {
     cols <- c(rep("#22222233", length(levels(other_miRs))), cols)
     shapes <- c(rep(21, length(levels(other_miRs))), shapes)
 
-    microRNA.TEvMP::miRplot(df = df,
+    microRNA.TEvMP::miRplot(df = TEdf,
                             color.groups = cols,
                             shape.groups = shapes)
   })
@@ -137,11 +133,11 @@ server <- function(input, output, session) {
   #### Create current plot ####
   MPplot <- reactive({
     req(input$miRs)
-    df <- df %>%
+    MPdf <- df %>%
       dplyr::filter(Type == "MP")
     highlight <- c(input$miRs)
-    other_miRs <- droplevels(df[!(df$miRNA %in% c(input$miRs)), ]$miRNA)
-    df$miRNA <- factor(df$miRNA, levels = c(levels(other_miRs), highlight))
+    other_miRs <- droplevels(MPdf[!(MPdf$miRNA %in% c(input$miRs)), ]$miRNA)
+    MPdf$miRNA <- factor(MPdf$miRNA, levels = c(levels(other_miRs), highlight))
 
     lapply(1:length(unique(input$miRs)), function(i) {
       req(input[[paste0("shape", i)]],
@@ -156,7 +152,7 @@ server <- function(input, output, session) {
     cols <- c(rep("#22222233", length(levels(other_miRs))), cols)
     shapes <- c(rep(21, length(levels(other_miRs))), shapes)
 
-    microRNA.TEvMP::miRplot(df = df,
+    microRNA.TEvMP::miRplot(df = MPdf,
                          color.groups = cols,
                          shape.groups = shapes)
   })
@@ -170,8 +166,8 @@ server <- function(input, output, session) {
     # Generate the PNG
     png(
       outfile,
-      width = 100 * 3.7795275591 * 3,
-      height = 50 * 3.7795275591 * 3,
+      width = 200 * 3.7795275591 * 3,
+      height = 100 * 3.7795275591 * 3,
       res = 72 * 3
     )
     gridExtra::grid.arrange(MPplot())
@@ -181,8 +177,8 @@ server <- function(input, output, session) {
     list(
       src = outfile,
       contentType = "image/png",
-      width = 100 * 3.7795275591 * 3,
-      height = 50 * 3.7795275591 * 3,
+      width = 200 * 3.7795275591,
+      height = 100 * 3.7795275591,
       alt = "This is alternate text"
     )
   }, deleteFile = TRUE)
@@ -196,8 +192,8 @@ server <- function(input, output, session) {
     # Generate the PNG
     png(
       outfile,
-      width = 50 * 3.7795275591 * 3,
-      height = 50 * 3.7795275591 * 3,
+      width = 200 * 3.7795275591 * 3,
+      height = 100 * 3.7795275591 * 3,
       res = 72 * 3
     )
     gridExtra::grid.arrange(TEplot())
@@ -207,8 +203,8 @@ server <- function(input, output, session) {
     list(
       src = outfile,
       contentType = "image/png",
-      width = 50 * 3.7795275591 * 3,
-      height = 50 * 3.7795275591 * 3,
+      width = 200 * 3.7795275591,
+      height = 100 * 3.7795275591,
       alt = "This is alternate text"
     )
   }, deleteFile = TRUE)
