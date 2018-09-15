@@ -14,6 +14,11 @@ ui <- fluidPage(
         label = "Select microRNAs to highlight:",
         choices = NULL,
         multiple = TRUE
+      ),
+      #### Shape, color, fill UI ####
+      fluidRow(
+        column(6, h4("Shapes"), uiOutput("shapes")),
+        column(6, h4("Colors"), uiOutput("colors"))
       )
     ),
 
@@ -21,23 +26,30 @@ ui <- fluidPage(
     mainPanel(
 
       #### Plot ####
+      # fluidRow(column(
+      #   12,
+      #   align = "center",
+      #   imageOutput("TEplot_out", width = "100%")
+      # )),
+      # hr(),
+      # fluidRow(column(
+      #   12,
+      #   align = "center",
+      #   imageOutput("MPplot_out", width = "100%")
+      # )),
+      # hr(),
       fluidRow(column(
         12,
         align = "center",
-        imageOutput("TEplot_out", width = "100%")
+        plotOutput("TEplot_out", width = "100%")
       )),
       hr(),
       fluidRow(column(
         12,
         align = "center",
-        imageOutput("MPplot_out", width = "100%")
+        plotOutput("MPplot_out", width = "100%")
       )),
-      hr(),
-      #### Shape, color, fill UI ####
-      fluidRow(
-        column(6, h4("Shapes"), uiOutput("shapes")),
-        column(6, h4("Colors"), uiOutput("colors"))
-      )
+      hr()
     )
   )
 )
@@ -157,57 +169,13 @@ server <- function(input, output, session) {
                          shape.groups = shapes)
   })
 
-  output$MPplot_out <- renderImage({
-
-    # A temp file to save the output.
-    # This file will be removed later by renderImage
-    outfile <- tempfile(fileext = ".png")
-
-    # Generate the PNG
-    png(
-      outfile,
-      width = 200 * 3.7795275591 * 3,
-      height = 100 * 3.7795275591 * 3,
-      res = 72 * 3
-    )
+  output$MPplot_out <- renderPlot({
     gridExtra::grid.arrange(MPplot())
-    dev.off()
+  })
 
-    # Return a list containing the filename
-    list(
-      src = outfile,
-      contentType = "image/png",
-      width = 200 * 3.7795275591,
-      height = 100 * 3.7795275591,
-      alt = "This is alternate text"
-    )
-  }, deleteFile = TRUE)
-
-  output$TEplot_out <- renderImage({
-
-    # A temp file to save the output.
-    # This file will be removed later by renderImage
-    outfile <- tempfile(fileext = ".png")
-
-    # Generate the PNG
-    png(
-      outfile,
-      width = 200 * 3.7795275591 * 3,
-      height = 100 * 3.7795275591 * 3,
-      res = 72 * 3
-    )
+  output$TEplot_out <- renderPlot({
     gridExtra::grid.arrange(TEplot())
-    dev.off()
-
-    # Return a list containing the filename
-    list(
-      src = outfile,
-      contentType = "image/png",
-      width = 200 * 3.7795275591,
-      height = 100 * 3.7795275591,
-      alt = "This is alternate text"
-    )
-  }, deleteFile = TRUE)
+  })
 
   #### Stop app on close ####
   session$onSessionEnded(stopApp)
