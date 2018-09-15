@@ -3,7 +3,11 @@ Type: Package
 Title: Display graph of microRNA expression among TE and MP populations
 Version: 0.1.0
 Author: John D. Gagnon
-Description: Display graph of microRNA expression among TE and MP populations
+Description: Display graph of microRNA expression among TE and MP populations.
+  Uses data from Khan, A.A., L.A. Penny, Y. Yuzefpolskiy, S. Sarkar, and 
+  V. Kalia. 2013. MicroRNA-17∼92 regulates effector and memory CD8 T-cell fates 
+  by modulating proliferation in response to infections. 
+  Blood. 121:4473–4483. doi:10.1182/blood-2012-06-435412.
 Depends: R (>= 3.5)
 Imports: 
     ggplot2 (>= 3.0.0), 
